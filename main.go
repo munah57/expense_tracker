@@ -4,7 +4,8 @@ import (
 	"tracker/config"
 	"tracker/database"
 )
-
+//create register handler //login handler - user 
+//create transaction handler 
 // the .gitignore - this is important as it shows what files it does not want to track on github
 //example is .env - the .env is what holds your config variables - if it falls into hackers, your application is in dancger!
 func main() {
@@ -15,7 +16,16 @@ func main() {
 
 	//connect to DB string
 	database.ConnectDB() 
-	
-//create register handler //login handler - user 
-//create transaction handler 
+
+	//initialise repo
+
+	//initialise the service
+
+	//initialise the handler 
+
+	//define routes
+
+	//start the server
+
+
 }
