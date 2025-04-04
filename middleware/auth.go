@@ -9,7 +9,7 @@ import (
 	jwt "github.com/golang-jwt/jwt/v4"
 
 )
-//generate JWT token 
+//generate JWT token by taking in UserID
 func GenerateJWT(userID uint) (string, error) {
 	secret := os.Getenv("JWT_SECRET")
 
@@ -20,9 +20,9 @@ func GenerateJWT(userID uint) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err :=token.SignedString([]byte(secret))
+	tokenString, err := token.SignedString([]byte(secret)) //KEY 
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return tokenString, nil 
@@ -33,7 +33,7 @@ func VerifyJWT(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("unexpected signing method")
-	}
+	} //check signing method
 	return []byte(secret), nil
 	})
 	
