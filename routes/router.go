@@ -22,6 +22,6 @@ func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.T
 
 	protected.HandleFunc("/transaction", transactionHandler.CreateTransaction).Methods("POST")
 	protected.HandleFunc("/transation", transactionHandler.GetTransactionsByType).Methods("GET")
-
+//fix type
 	return r
 }

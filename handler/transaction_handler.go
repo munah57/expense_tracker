@@ -16,7 +16,7 @@ func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 	var transaction models.Transaction
 	err := json.NewDecoder(r.Body).Decode(&transaction)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -50,7 +50,7 @@ func (h *TransactionHandler) GetTransactionsByType (w http.ResponseWriter, r *ht
 	}
 	//call the service layer 
 	var err error
-	
+
 	transactions, err = h.Service.GetTransactionsByType(Type)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
