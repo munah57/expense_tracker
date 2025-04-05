@@ -21,7 +21,7 @@ func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.T
 	//authenticated protected routes
 
 	protected.HandleFunc("/transaction", transactionHandler.CreateTransaction).Methods("POST")
-	protected.HandleFunc("/transation", transactionHandler.GetTransactionsByType).Methods("GET")
+	protected.HandleFunc("/transaction", transactionHandler.GetTransactionsByUserID).Methods("GET")
 //fix type
 	return r
 }

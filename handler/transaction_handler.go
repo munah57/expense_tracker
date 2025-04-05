@@ -6,6 +6,8 @@ import (
 	"tracker/middleware"
 	"tracker/models"
 	"tracker/service"
+	"strconv"
+	"fmt"
 )
 type TransactionHandler struct {
 	Service *service.TransactionService
@@ -16,7 +18,7 @@ func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 	var transaction models.Transaction
 	err := json.NewDecoder(r.Body).Decode(&transaction)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "user_id query parameter is required", http.StatusBadRequest)
 		return
 	}
 
@@ -39,23 +41,40 @@ func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 
 }
 
-func (h *TransactionHandler) GetTransactionsByType (w http.ResponseWriter, r *http.Request) {
-
+func (h *TransactionHandler) GetTransactionsByUserID (w http.ResponseWriter, r *http.Request) {
 	var transactions []models.Transaction
 
-	Type := r.URL.Query().Get("type")
-	if Type == "" {
-		http.Error(w, "type parameter is required", http.StatusBadRequest)
+	userid := r.URL.Query().Get("user_id")
+	if userid == "" {
+		http.Error(w, "user_id query parameter is missing", http.StatusBadRequest)
 		return
 	}
-	//call the service layer 
-	var err error
 
-	transactions, err = h.Service.GetTransactionsByType(Type)
+	idInt, err := strconv.Atoi(userid)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "invalid post ID", http.StatusBadRequest)
 		return
 	}
+	fmt.Printf("Received user_id: %s\n", userid)
+    fmt.Printf("Fetching transactions for user id: %d\n", idInt)
+
+	//call the service layer 
+	transactions, err = h.Service.GetTransactionsByUserID(uint(idInt))
+	if err != nil {
+		fmt.Printf("Error fetching transactions for user_id: %d, error: %v\n", idInt, err)
+        http.Error(w, "failed to fetch transactions", http.StatusInternalServerError)
+        return
+	}
+
+	if len(transactions) == 0 {
+        http.Error(w, "no transactions found for this user", http.StatusNotFound)
+        return
+    }
 	//response
-	json.NewEncoder(w).Encode(transactions) 
+	w.Header().Set("Content-Type", "application/json")
+    err = json.NewEncoder(w).Encode(transactions)
+    if err != nil {
+        http.Error(w, "failed to encode transactions", http.StatusInternalServerError)
+        return
+    }
 }

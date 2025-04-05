@@ -19,8 +19,8 @@ func (t *TransactionService) CreateTransaction(transaction *models.Transaction) 
 	return nil 
 }
 
-func (t *TransactionService) GetTransactionsByType(Type string) ([]models.Transaction, error) {
-	transactions, err := t.Repo.GetTransactionsByType(Type)
+func (t *TransactionService) GetTransactionsByUserID(userID uint) ([]models.Transaction, error) {
+	transactions, err := t.Repo.GetTransactionsByUserID(userID)
 	if err != nil {
 		return []models.Transaction{}, err
 	}
