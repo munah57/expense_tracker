@@ -14,6 +14,8 @@ type TransactionHandler struct {
 }
 
 
+var transactions []models.Transaction
+
 func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	var transaction models.Transaction
 	err := json.NewDecoder(r.Body).Decode(&transaction)
@@ -42,7 +44,6 @@ func (h *TransactionHandler) CreateTransaction(w http.ResponseWriter, r *http.Re
 }
 
 func (h *TransactionHandler) GetTransactionsByUserID (w http.ResponseWriter, r *http.Request) {
-	var transactions []models.Transaction
 
 	userid := r.URL.Query().Get("user_id")
 	if userid == "" {
@@ -52,11 +53,11 @@ func (h *TransactionHandler) GetTransactionsByUserID (w http.ResponseWriter, r *
 
 	idInt, err := strconv.Atoi(userid)
 	if err != nil {
-		http.Error(w, "invalid post ID", http.StatusBadRequest)
+		http.Error(w, "invalid user ID", http.StatusBadRequest)
 		return
 	}
 	fmt.Printf("Received user_id: %s\n", userid)
-    fmt.Printf("Fetching transactions for user id: %d\n", idInt)
+    fmt.Printf("Fetching transactions for user_id: %d\n", idInt)
 
 	//call the service layer 
 	transactions, err = h.Service.GetTransactionsByUserID(uint(idInt))
@@ -78,3 +79,37 @@ func (h *TransactionHandler) GetTransactionsByUserID (w http.ResponseWriter, r *
         return
     }
 }
+
+
+func (h *TransactionHandler) GetTotalBalance(w http.ResponseWriter, r *http.Request) {
+
+	userid := r.URL.Query().Get("user_id")
+	if userid == "" {
+		http.Error(w, "user_id query parameter is missing", http.StatusBadRequest)
+		return
+	}
+
+	idInt, err := strconv.Atoi(userid)
+	if err != nil {
+		http.Error(w, "invalid user ID", http.StatusBadRequest)
+		return
+	}
+	fmt.Printf("Received user_id: %s\n", userid)
+    fmt.Printf("Fetching transactions for user id: %d\n", idInt)
+
+	userID, err := middleware.GetUserIDFromToken(r)
+	if err != nil {
+		http.Error(w, "could not get user id", http.StatusInternalServerError)
+		return
+	}
+
+	totalBalance, err := h.Service.GetTotalBalance(userID)
+	if err != nil {
+		http.Error(w, "could not calculate total balance", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(totalBalance)
+}
+

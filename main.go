@@ -27,18 +27,21 @@ func main() {
 	//initialise repo
 	userRepo := &repository.UserRepo{}
 	transactionRepo := &repository.TransactionRepo{}
+	budgetRepo := &repository.BudgetRepo{}
 
 	//initialise the service
 	UserService := &service.UserService{Repo: userRepo}
 	transactionService := &service.TransactionService{Repo: transactionRepo}
+	budgetService := &service.BudgetService{Repo: budgetRepo}
 
 
 	//initialise the handler 
 	userHandler := &handler.UserHandler{Service: UserService}
 	transactionHandler := &handler.TransactionHandler{Service: transactionService}
+	budgetHandler :=&handler.BudgetHandler{Service: budgetService}
 	
 	//define routes
-	router := routes.SetupRouter(userHandler, transactionHandler)
+	router := routes.SetupRouter(userHandler, transactionHandler,budgetHandler)
 
 	//start the server
 	fmt.Println("server is running on localhost:8080...")

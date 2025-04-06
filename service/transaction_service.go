@@ -25,7 +25,29 @@ func (t *TransactionService) GetTransactionsByUserID(userID uint) ([]models.Tran
 		return []models.Transaction{}, err
 	}
 	return transactions, nil 
+
+}
+func (t *TransactionService) GetTotalIncome(userID uint) (float64, error) {
+	totalIncome, err := t.Repo.GetTotalIncome(userID)
+	if err != nil {
+		return 0, err
+	}
+	return totalIncome, nil
+}
+func (t *TransactionService) GetTotalExpense(userID uint) (float64, error) {
+	totalExpense, err := t.Repo.GetTotalExpense(userID)
+	if err != nil {
+		return 0, err
+	}
+	return totalExpense, nil
 }
 
-//Get transaction by type, if expense or 
+//check this code out, it is a bit different from the one above
+func (r *TransactionService) GetTotalBalance(userID uint) (float64, error) {
+	totalBalance, err := r.Repo.GetTotalBalance(userID)
+	if err != nil {
+		return 0, err
+	}
+	return totalBalance, nil
+}
 

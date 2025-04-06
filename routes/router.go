@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.TransactionHandler) *mux.Router {
+func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.TransactionHandler, budgetHandler *handler.BudgetHandler ) *mux.Router {
 	r := mux.NewRouter()
 
 	//public routes
@@ -22,6 +22,14 @@ func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.T
 
 	protected.HandleFunc("/transaction", transactionHandler.CreateTransaction).Methods("POST")
 	protected.HandleFunc("/transaction", transactionHandler.GetTransactionsByUserID).Methods("GET")
+	protected.HandleFunc("/transaction/balance", transactionHandler.GetTotalBalance).Methods("GET")
+	protected.HandleFunc("/budget", budgetHandler.CreateBudget).Methods("POST")
+	protected.HandleFunc("/budget", budgetHandler.GetBudgetsByUserID).Methods("GET")
+	
+
+
+
+
 //fix type
 	return r
 }

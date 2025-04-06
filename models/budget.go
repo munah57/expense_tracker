@@ -8,3 +8,4 @@ type Budget struct {
 	Category string `json:"category" gorm:"not null"`
 	Amount float64`json:"amount" gorm:"not null"`
 } 
+

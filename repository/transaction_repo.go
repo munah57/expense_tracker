@@ -22,6 +22,9 @@ type TransactionRepo struct {}
 type TransactionRepository interface {
 	CreateTransaction(transaction *models.Transaction) error
 	GetTransactionsByUserID(userID uint) ([]models.Transaction, error)
+	GetTotalIncome(userID uint) (float64, error)
+	GetTotalExpense(userID uint) (float64, error) 
+	GetTotalBalance(userID uint) (float64, error) 
 }
 
 func (r *TransactionRepo) CreateTransaction(transaction *models.Transaction) error {
@@ -40,4 +43,33 @@ func (r *TransactionRepo) GetTransactionsByUserID(userID uint) ([]models.Transac
 		return []models.Transaction{}, err
 	}
 	return transactions, nil 
+}
+func (r *TransactionRepo) GetTotalIncome(userID uint) (float64, error) {
+	var totalIncome float64
+	err := database.DB.Model(&models.Transaction{}).Where("user_id = ? AND type = ?", userID, "income").Select("SUM(amount)").Scan(&totalIncome).Error
+	if err != nil {
+		return 0, err
+	}
+	return totalIncome, nil
+}
+
+func (r *TransactionRepo) GetTotalExpense(userID uint) (float64, error) {
+	var totalExpense float64
+	err := database.DB.Model(&models.Transaction{}).Where("user_id = ? AND type = ?", userID, "expense").Select("SUM(amount)").Scan(&totalExpense).Error
+	if err != nil {
+		return 0, err
+	}
+	return totalExpense, nil
+}
+
+//check this code out, it is a bit different from the one above
+
+
+func (r *TransactionRepo) GetTotalBalance(userID uint) (float64, error) {
+	var totalBalance float64
+	err := database.DB.Model(&models.Transaction{}).Where("user_id = ?", userID).Select("SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END)").Scan(&totalBalance).Error
+	if err != nil {
+		return 0, err
+	}
+	return totalBalance, nil
 }
