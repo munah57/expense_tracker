@@ -80,7 +80,6 @@ func (h *TransactionHandler) GetTransactionsByUserID (w http.ResponseWriter, r *
     }
 }
 
-
 func (h *TransactionHandler) GetTotalBalance(w http.ResponseWriter, r *http.Request) {
 
 	userid := r.URL.Query().Get("user_id")
@@ -96,7 +95,7 @@ func (h *TransactionHandler) GetTotalBalance(w http.ResponseWriter, r *http.Requ
 	}
 	fmt.Printf("Received user_id: %s\n", userid)
     fmt.Printf("Fetching transactions for user id: %d\n", idInt)
-
+//debugging
 	userID, err := middleware.GetUserIDFromToken(r)
 	if err != nil {
 		http.Error(w, "could not get user id", http.StatusInternalServerError)

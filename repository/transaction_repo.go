@@ -62,7 +62,12 @@ func (r *TransactionRepo) GetTotalExpense(userID uint) (float64, error) {
 	return totalExpense, nil
 }
 
-//check this code out, it is a bit different from the one above
+//Using sql to get the toal balance. We use "SUM" with a case statment "CASE WHEN - this allows us to perform the condition.
+//  "THEN specifies the result  
+//THEN: Specifies the result if the condition evaluates to true.
+// ELSE alternative: If the condition is not met, this value is used. Often set to 0 so it doesn’t affect the sum.
+//END: Concludes the CASE expression.
+
 
 
 func (r *TransactionRepo) GetTotalBalance(userID uint) (float64, error) {
