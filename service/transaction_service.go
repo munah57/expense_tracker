@@ -41,7 +41,6 @@ func (t *TransactionService) GetTotalExpense(userID uint) (float64, error) {
 	}
 	return totalExpense, nil
 }
-
 //check this code out, it is a bit different from the one above
 func (r *TransactionService) GetTotalBalance(userID uint) (float64, error) {
 	totalBalance, err := r.Repo.GetTotalBalance(userID)

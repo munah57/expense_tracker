@@ -24,7 +24,10 @@ func SetupRouter(userHandler *handler.UserHandler, transactionHandler *handler.T
 	protected.HandleFunc("/transaction", transactionHandler.GetTransactionsByUserID).Methods("GET")
 	protected.HandleFunc("/transaction/balance", transactionHandler.GetTotalBalance).Methods("GET")
 	protected.HandleFunc("/budget", budgetHandler.CreateBudget).Methods("POST")
-	protected.HandleFunc("/budget", budgetHandler.GetBudgetsByUserID).Methods("GET")
+	protected.HandleFunc("/budgets", budgetHandler.GetBudgetsByUserID).Methods("GET")
+	protected.HandleFunc("/budget", budgetHandler.UpdateBudget).Methods("PUT")
+	protected.HandleFunc("/budget", budgetHandler.DeleteBudget).Methods("DELETE")
+
 	
 
 

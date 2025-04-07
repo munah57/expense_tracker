@@ -3,6 +3,7 @@ package service
 import (
 	"tracker/models"
 	"tracker/repository"
+	"errors"
 )
 
 type BudgetService struct {
@@ -45,8 +46,15 @@ func (b *BudgetService) UpdateBudget(budget *models.Budget) error {
 	}
 	return nil
 }
-func (b *BudgetService) DeleteBudget(budget *models.Budget) error {	
-	err := b.Repo.DeleteBudget(budget)
+
+//delete a budget by id 
+func (b *BudgetService) DeleteBudget(id uint) error {	
+
+	ok := b.Repo.CheckBudgetExists(id)
+	if !ok {
+		return errors.New("budget not found")
+	}
+	err := b.Repo.DeleteBudget(id)
 	if err != nil {
 		return err
 	}

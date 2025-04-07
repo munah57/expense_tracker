@@ -12,7 +12,8 @@ type BudgetRepository interface {
 	CreateBudget(budget *models.Budget) error
 	GetBudgetsByUserID(userID uint) ([]models.Budget, error)
 	UpdateBudget(budget *models.Budget) error
-	DeleteBudget(budget *models.Budget) error
+	CheckBudgetExists(id uint) bool 
+	DeleteBudget(id uint) error
 }
 
 func (b *BudgetRepo) CheckDuplicateBudget(budget *models.Budget) bool {
@@ -38,15 +39,22 @@ func (b *BudgetRepo) GetBudgetsByUserID(UserID uint) ([]models.Budget, error) {
 }
 
 func (b *BudgetRepo) UpdateBudget(budget *models.Budget) error {
-	err := database.DB.Save(&budget).Error
+	err := database.DB.Save(budget).Error
 	if err !=nil {
 		return err
 	}
 	return nil 
 }
 
-func (b *BudgetRepo) DeleteBudget(budget *models.Budget) error {
-	err := database.DB.Delete(&budget).Error
+
+func (b *BudgetRepo) CheckBudgetExists(id uint) bool {
+	var count int64
+	database.DB.Model(&models.Budget{}).Where("id = ?", id).Count(&count)
+	return count > 0
+}
+
+func (b *BudgetRepo) DeleteBudget(id uint) error {
+	err := database.DB.Delete(&models.Budget{}).Error
 	if err !=nil {
 		return err
 	}
