@@ -1,9 +1,11 @@
 package service
 
 import (
+	"errors"
+	"log"
+	"fmt"
 	"tracker/models"
 	"tracker/repository"
-	"errors"
 )
 
 type BudgetService struct {
@@ -49,14 +51,17 @@ func (b *BudgetService) UpdateBudget(budget *models.Budget) error {
 
 //delete a budget by id 
 func (b *BudgetService) DeleteBudget(id uint) error {	
-
+	
 	ok := b.Repo.CheckBudgetExists(id)
 	if !ok {
 		return errors.New("budget not found")
 	}
+	log.Printf("Budget with ID %d found, proceeding to delete", id)
+
 	err := b.Repo.DeleteBudget(id)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete budget: %w", err)
 	}
 	return nil
+
 }

@@ -3,6 +3,7 @@ package repository
 import (
 	"tracker/database"
 	"tracker/models"
+
 )
 
 type BudgetRepo struct{}
@@ -52,12 +53,27 @@ func (b *BudgetRepo) CheckBudgetExists(id uint) bool {
 	database.DB.Model(&models.Budget{}).Where("id = ?", id).Count(&count)
 	return count > 0
 }
-
 func (b *BudgetRepo) DeleteBudget(id uint) error {
-	err := database.DB.Delete(&models.Budget{}).Error
-	if err !=nil {
+	err := database.DB.Where("id = ?", id).Delete(&models.Budget{}).Error
+	if err !=nil { //for soft delete otherwise if we use the Delete() method it will delete the record from the database entirely
 		return err
 	}
 	return nil 
 }
 
+//after debugging, i relaised i used the wrong order to delete from database where method should be first 
+
+/*func (b *BudgetRepo) SoftDeleteBudget(id uint) error {
+	err := database.DB.Model(&models.Budget{}).Where("id = ?", id).Update("deleted_at", time.Now()).Error
+	if err !=nil { //for soft delete otherwise if we use the Delete() method it will delete the record from the database entirely
+		return err
+	}
+	return nil 
+}
+*/
+/*
+
+When trying to perform a soft delete, not use the `Delete()` method directly, as it tries to delete the record from the database entirely rather than soft delete it.
+Instead, use an `Update` to set the `deleted_at` field, while ensuring that you also provide a `WHERE` clause to filter the operation correctly. 
+getting where conditions error. Added the follwing for a soft delete change to .Update("deleted_at", time.Now()).Error
+*/

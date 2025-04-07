@@ -129,9 +129,9 @@ func (h *BudgetHandler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 
 func (h *BudgetHandler) DeleteBudget(w http.ResponseWriter, r *http.Request) {
 	
-	budgetID := r.URL.Query().Get("user_id")
+	budgetID := r.URL.Query().Get("id")
 	if budgetID == "" {
-		http.Error(w, "user_id query parameter is missing", http.StatusBadRequest)
+		http.Error(w, "id query parameter is missing", http.StatusBadRequest)
 		return
 	}
 
@@ -144,6 +144,7 @@ func (h *BudgetHandler) DeleteBudget(w http.ResponseWriter, r *http.Request) {
 
 	err = h.Service.DeleteBudget(uint(idInt))
 	if err != nil {
+		fmt.Printf("Error deleting budget with ID: %d, error: %v\n", idInt, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
